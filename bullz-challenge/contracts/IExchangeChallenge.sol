@@ -1,4 +1,5 @@
-pragma solidity >=0.6.0 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.15;
 
 
 /**
@@ -13,29 +14,27 @@ interface IExchangeChallenge {
         address collection;
         uint256 assetId;
         uint256 amount;
-        uint256 submissionLimit;
         bool allowResell;
-        uint256 saleEnd;
         uint256 airdropStartAt;
         uint256 airdropEndAt;
     }
     /**
      * @dev Emitted when `challengeId` challenge is created.
      */
-    event AddChallenge(uint id, address indexed seller, address indexed collection, uint256  assetId, uint256 amount, uint256 submissionLimit, bool allowResell, uint256  saleEnd, uint256  airdropStartAt, uint256  airdropEndAt);
+    event AddChallenge(bytes32 challengeId, address indexed seller, address indexed collection, uint256  assetId, uint256  amount,bool allowResell, uint256  airdropStartAt,  uint256 airdropEndAt);
     /**
      * @dev save an offer challenge.
      */
-    function addChallenge(uint id, address seller, address collection, uint256 assetId, uint256 amount, uint256 submissionLimit, bool allowResell, uint256 saleEnd, uint256 airdropStartAt, uint256 airdropEndAt) external  returns (uint256);
+    function addChallenge(address collection, uint256 assetId, uint256 amount, bool allowResell, uint256 airdropStartAt,  uint256 airdropEndAt) external  returns (bytes32);
 
     /**
      * @dev Emitted when `challengeId` challenge is created.
      */
-    event AirDropChallenge(uint256 challengeId, address receiver, uint256 amount);
+    event AirDropChallenge(bytes32 challengeId, address receiver, uint256 amount);
     /**
      * @dev airdrop NFT token
      */
-    function airdropChallenge(uint challengeId, address receiver, uint256 amount) external returns (bool);
+    function airdropChallenge(bytes32 challengeId, address receiver, uint256 amount) external returns (bool);
     /**
      * @dev set utility token
      */
@@ -43,13 +42,16 @@ interface IExchangeChallenge {
     /**
      * @dev set marketplace  token nft number equivalent in ERC20
      */
-     function setBullzFee(uint256 fee)external   returns (bool);
+     function setFee(uint256 fee)external   returns (bool);
     /**
+    * @dev withdraw nft when airdrop is ended
      */
-
+    function withdrawChallenge(bytes32 challengeId) external returns (bool);
+    
+    event WithdrawChallenge(bytes32 challengeId);
     event SetMarketToken(address  token);
     event BulkAirdrop(address owner,address collection, uint nftId, address[] recipient);
-    event SetBullzFee(uint256 fee);
+    event SetFee(uint256 fee);
  
 
 }

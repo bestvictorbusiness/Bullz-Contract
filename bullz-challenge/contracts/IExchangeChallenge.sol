@@ -14,18 +14,17 @@ interface IExchangeChallenge {
         address collection;
         uint256 assetId;
         uint256 amount;
-        bool allowResell;
         uint256 airdropStartAt;
         uint256 airdropEndAt;
     }
     /**
      * @dev Emitted when `challengeId` challenge is created.
      */
-    event AddChallenge(bytes32 challengeId, address indexed seller, address indexed collection, uint256  assetId, uint256  amount,bool allowResell, uint256  airdropStartAt,  uint256 airdropEndAt);
+    event AddChallenge(bytes32 challengeId, address indexed seller, address indexed collection, uint256  assetId, uint256  amount, uint256  airdropStartAt,  uint256 airdropEndAt);
     /**
      * @dev save an offer challenge.
      */
-    function addChallenge(address collection, uint256 assetId, uint256 amount, bool allowResell, uint256 airdropStartAt,  uint256 airdropEndAt) external  returns (bytes32);
+    function addChallenge(address collection, uint256 assetId, uint256 amount, uint256 airdropStartAt,  uint256 airdropEndAt) external  returns (bytes32);
 
     /**
      * @dev Emitted when `challengeId` challenge is created.

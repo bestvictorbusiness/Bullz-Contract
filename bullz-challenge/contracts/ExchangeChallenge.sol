@@ -17,7 +17,7 @@ contract ExchangeChallenge is IExchangeChallenge, Ownable, ERC1155Holder{
     
     using SafeMath for uint256;
     mapping(bytes32 => Challenge) public challenges;// marketplace challenges
-    mapping(address => mapping(uint256 => bool)) public noResells;
+    mapping(address => mapping(uint256 => bool)) public airdropped;
     IERC20 public MARKET_TOKEN; // marketplace governance token
     uint256 public BULLZ_FEE = 5e18;// marketplace token peer challenge token
     using Counters for Counters.Counter;
@@ -32,7 +32,6 @@ contract ExchangeChallenge is IExchangeChallenge, Ownable, ERC1155Holder{
      * @param collection ERC1155 collection
      * @param assetId the NFT identifer
      * @param amount the amount in airdrop
-     * @param allowResell allow resell after first sell
      * @param airdropStartAt airdrop start date
      * @param airdropEndAt airdrop start date
      */
@@ -40,11 +39,10 @@ contract ExchangeChallenge is IExchangeChallenge, Ownable, ERC1155Holder{
         address collection, 
         uint256 assetId, 
         uint256 amount, 
-        bool allowResell,  
         uint256 airdropStartAt,
         uint256 airdropEndAt)external override returns (bytes32){
-            require(!noResells[collection][assetId],'Challenge Exchange: Unauthorized sell');
-
+            require(collection != address(0), "Challenge Exchange: Collection address not valid");
+            require(!airdropped[collection][assetId],'Challenge Exchange: Can not add for re challenge');
             require(MARKET_TOKEN.balanceOf(_msgSender()) >= uint256(BULLZ_FEE).mul(amount) , "Challenge Exchange: Insufficient balance");
             require(airdropStartAt > block.timestamp, "Challenge Exchange: invalid start at airdrop");
             require(airdropEndAt > airdropStartAt, "Challenge Exchange: invalid start at airdrop");
@@ -63,12 +61,11 @@ contract ExchangeChallenge is IExchangeChallenge, Ownable, ERC1155Holder{
                 collection, 
                 assetId, 
                 amount, 
-                allowResell, 
                 airdropStartAt,
                 airdropEndAt
             );
             
-            emit AddChallenge(challengeId, _msgSender(), collection, assetId, amount, allowResell, airdropStartAt, airdropEndAt);
+            emit AddChallenge(challengeId, _msgSender(), collection, assetId, amount, airdropStartAt, airdropEndAt);
 
             bool success = MARKET_TOKEN.transferFrom(_msgSender(), owner(), amount.mul(BULLZ_FEE));
             require(success, "Challenge Exchange: Token transfer did not succeeded ");
@@ -87,17 +84,18 @@ contract ExchangeChallenge is IExchangeChallenge, Ownable, ERC1155Holder{
         address receiver, 
         uint256 amount
         ) external override returns (bool){
+            require(receiver != address(0), "Challenge Exchange: Receiver address not valid");
             Challenge storage challenge = challenges[challengeId];
             require(challenge.seller == _msgSender(),"Challenge Exchange: caller not an owner");
             require(challenge.amount >= amount, "Challenge Exchange: Insufficient balance airdrop");
             require(block.timestamp >= challenge.airdropStartAt, "Challenge Exchange: invalid start at airdrop");
-            require(challenge.airdropStartAt <= challenge.airdropEndAt, "Challenge Exchange: invalid endAt airdrop");
             challenge.amount =  uint256(challenge.amount).sub(amount);    
             IERC1155 nftCollection = IERC1155(challenge.collection);
-            
-            if(!challenge.allowResell){                
-                noResells[challenge.collection][challenge.assetId] = true; 
+
+            if(!airdropped[challenge.collection][challenge.assetId]){
+                airdropped[challenge.collection][challenge.assetId] = true;
             }
+
             nftCollection.safeTransferFrom(address(this), receiver, challenge.assetId, amount, "");
             return true;
         }

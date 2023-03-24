@@ -1,0 +1,40 @@
+{
+  "name": "bullz-nft-challenge-contract",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/bestvictorbusiness/Challenge-marketplace-contract.git",
+  "author": "zouhir <zouhirtaousy@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "4.7.0",
+    "@openzeppelin/contracts-upgradeable": "4.7.0",
+    "cli-color": "^2.0.3",
+    "ethereum-waffle": "^3.4.4"
+  },
+  "devDependencies": {
+    "@daonomic/tests-common": "^0.2.2",
+    "@nomiclabs/hardhat-ethers": "^2.1.1",
+    "@nomiclabs/hardhat-etherscan": "^3.1.0",
+    "@nomiclabs/hardhat-ganache": "^2.0.1",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "chai": "^4.3.6",
+    "chalk": "^5.0.1",
+    "dotenv": "^16.0.1",
+    "eslint": "^8.26.0",
+    "ethers": "^5.7.0",
+    "hardhat": "^2.10.2",
+    "nyc": "^15.1.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.24",
+    "solidity-coverage": "^0.8.1",
+    "web3": "^1.7.5"
+  },
+  "scripts": {
+    "test": "npx hardhat test",
+    "coverage": "npx hardhat coverage",
+    "lint": "prettier --list-different 'contracts/**/*.sol'",
+    "lint:fix": "eslint './**/*.{js,ts,tsx,sol}' --quiet --fix",
+    "prettier": "prettier --write 'contracts/**/*.sol'",
+    "prettier:js": "prettier --write 'test/**/*.js'"
+  }
+}

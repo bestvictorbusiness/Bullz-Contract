@@ -1,0 +1,19 @@
+.DS_Store
+.secret
+.etherscan-key
+node_modules/
+build
+build/
+.polyscan-key
+
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+
+#Hardhat files
+cache
+artifacts
+
